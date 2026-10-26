@@ -9,46 +9,69 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
 <style>
-/* Layout: een bord met ruitjespapier; elk cijfer staat in een eigen hokje en de rode komma springt over de lijnen */
+/* Layout: methodekaart met de drie stappen boven een bord van ruitjespapier; elk cijfer in een hokje, de rode komma springt over de lijnen */
 :root{
   --bg:#F2F5F9; --paper:#FCFDFE; --grid:#D9E2EF; --line:#C7D2E3; --ink:#1B2540; --muted:#5A6684;
-  --comma:#D2372B; --per:#1E5FD0; --pre:#1C8550; --glow:rgba(30,95,208,.13); --panel:#E9EEF6; --on-per:#FFFFFF;
+  --comma:#D2372B; --per:#1E5FD0; --pre:#1C8550; --glow:rgba(30,95,208,.13); --panel:#E9EEF6;
+  --step:#1F6F78; --on-step:#FFFFFF; --step-soft:rgba(31,111,120,.12);
   --f-num:"Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --f-body:"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --cell: clamp(20px, min(calc((min(100vw, 1000px) - 48px) / 17), calc((100vh - 290px) / 11)), 58px);
+  --cell: clamp(19px, min(calc((min(100vw, 1000px) - 48px) / 17), calc((100vh - 400px) / 11)), 56px);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0E1420; --paper:#141C2B; --grid:#223049; --line:#2C3B57; --ink:#E7EDF6; --muted:#97A5BD;
-    --comma:#FF6A5A; --per:#74ABFF; --pre:#5CCB8D; --glow:rgba(116,171,255,.17); --panel:#1A2336; --on-per:#0C1424;
+    --comma:#FF6A5A; --per:#74ABFF; --pre:#5CCB8D; --glow:rgba(116,171,255,.17); --panel:#1A2336;
+    --step:#4DB3BE; --on-step:#0B1A1D; --step-soft:rgba(77,179,190,.16);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0E1420; --paper:#141C2B; --grid:#223049; --line:#2C3B57; --ink:#E7EDF6; --muted:#97A5BD;
-  --comma:#FF6A5A; --per:#74ABFF; --pre:#5CCB8D; --glow:rgba(116,171,255,.17); --panel:#1A2336; --on-per:#0C1424;
+  --comma:#FF6A5A; --per:#74ABFF; --pre:#5CCB8D; --glow:rgba(116,171,255,.17); --panel:#1A2336;
+  --step:#4DB3BE; --on-step:#0B1A1D; --step-soft:rgba(77,179,190,.16);
   color-scheme:dark;
 }
 body{
   background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:16px;
-  padding-block:18px;
+  padding-block:16px;
   padding-left:max(16px, env(safe-area-inset-left, 0px));
   padding-right:max(16px, env(safe-area-inset-right, 0px));
 }
-.wrap{max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:14px}
-header{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:10px 20px}
-h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wrap:balance}
-.hint{margin:4px 0 0; color:var(--muted); font-size:.92rem}
-.tabs{display:flex; flex-wrap:wrap; gap:6px}
+.wrap{max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:12px}
+header{display:flex; flex-direction:column; gap:10px}
+h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap:balance}
+.hint{margin:2px 0 0; color:var(--muted); font-size:.9rem}
+.pick{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.pick-label{font-size:.85rem; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; margin-right:4px}
 .btn{
-  font:inherit; font-size:1rem; padding:.55em 1em; border-radius:8px; border:1px solid var(--line);
+  font:inherit; font-size:1rem; padding:.5em .95em; border-radius:8px; border:1px solid var(--line);
   background:var(--paper); color:var(--ink); cursor:pointer; line-height:1.2;
 }
 .btn:hover{border-color:var(--per)}
-.btn:focus-visible{outline:3px solid var(--per); outline-offset:2px}
-.btn[aria-pressed="true"], .btn.primary{background:var(--per); color:var(--on-per); border-color:transparent}
+.btn:focus-visible, .chip:focus-visible, .dot:focus-visible{outline:3px solid var(--per); outline-offset:2px}
+.btn.primary{background:var(--per); color:var(--paper); border-color:transparent}
 .btn:disabled{opacity:.4; cursor:default}
-.tab small{font-family:var(--f-num); font-size:.9em; opacity:.85}
+.chip{
+  font-family:var(--f-num); font-size:.95rem; padding:.35em .7em; border-radius:999px;
+  border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer;
+  display:inline-flex; gap:.45em; align-items:baseline; font-variant-numeric:tabular-nums;
+}
+.chip i{font-style:normal; font-family:var(--f-body); font-size:.78em; color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.chip[aria-pressed="true"] i{color:inherit; opacity:.75}
+
+/* methodekaart */
+.method{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:8px}
+.method p{margin:0; font-size:.95rem; color:var(--muted)}
+.method p.on{color:var(--ink); font-weight:700}
+.method ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px}
+.method li{display:flex; gap:10px; align-items:center; padding:6px 8px; border-radius:8px; transition:background-color .3s; min-width:0; font-size:clamp(.9rem, 1.6vw, 1.02rem); line-height:1.3}
+.method li .n{flex:none; width:2em; height:2em; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--step); color:var(--on-step); font-weight:700; opacity:.45; transition:opacity .3s, transform .3s}
+.method li.on{background:var(--step-soft)}
+.method li.on .n{opacity:1; transform:scale(1.08)}
+.method li.done .n{opacity:1}
+@media (max-width:640px){ .method ol{grid-template-columns:1fr} }
 
 /* het bord */
 .stage{
@@ -68,7 +91,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
 .row.on.dim{opacity:.28}
 .op,.lab,.eq{position:absolute; top:0; height:100%; display:flex; align-items:center; font-size:calc(var(--cell) * .74)}
 .op{left:0; width:var(--cell); justify-content:center; color:var(--comma); font-weight:700}
-.lab{left:var(--cell); width:calc(var(--cell) * 4); justify-content:flex-end; padding-right:calc(var(--cell) * .12); box-sizing:border-box; font-weight:700}
+.lab{left:var(--cell); width:calc(var(--cell) * 4); justify-content:flex-end; padding-right:calc(var(--cell) * .12); box-sizing:border-box; font-weight:700; white-space:nowrap}
 .eq{left:calc(var(--cell) * 5); width:var(--cell); justify-content:center}
 .strip{
   position:absolute; left:calc(var(--cell) * 6); top:0; height:100%; width:calc(var(--cell) * 11);
@@ -89,7 +112,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
 .d::before{
   content:""; position:absolute; left:0; right:0; top:50%; height:max(2px, calc(var(--cell) * .075));
   background:var(--comma); transform:scaleX(0); transform-origin:left;
-  transition:transform .35s ease; transition-delay:calc(var(--k, 0) * 70ms);
+  transition:transform .35s ease; transition-delay:calc(var(--k, 0) * 60ms);
 }
 .d.strike{color:var(--muted); background:transparent}
 .d.strike::before{transform:scaleX(1)}
@@ -122,36 +145,37 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
 .rule.on{transform:scaleX(1)}
 .strip.frac{display:flex; align-items:center}
 .fr{
-  display:inline-flex; flex-direction:column; padding:0 calc(var(--cell) * .2);
+  display:inline-flex; flex-direction:column; padding:0 calc(var(--cell) * .2); border-radius:6px;
   background-image:linear-gradient(var(--ink), var(--ink)); background-repeat:no-repeat;
-  background-size:100% max(2px, calc(var(--cell) * .07)); background-position:0 50%;
+  background-size:calc(100% - var(--cell) * .2) max(2px, calc(var(--cell) * .07)); background-position:50% 50%;
+  outline:max(2px, calc(var(--cell) * .07)) solid transparent; outline-offset:calc(var(--cell) * .08);
+  transition:outline-color .4s, color .4s;
 }
 .fr > span{display:flex; justify-content:center}
 .c{width:var(--cell); height:var(--cell); display:inline-flex; align-items:center; justify-content:center; font-size:calc(var(--cell) * .78)}
 .mid{width:var(--cell); display:inline-flex; justify-content:center; font-size:calc(var(--cell) * .74)}
 .p2{display:inline-flex; align-items:center; opacity:0; transform:translateX(-12px); transition:opacity .5s, transform .5s}
 .p2.on{opacity:1; transform:none}
-.fr.hl{outline:max(2px, calc(var(--cell) * .07)) solid var(--pre); outline-offset:calc(var(--cell) * .08); border-radius:6px; color:var(--pre); font-weight:700}
+.fr.hl{outline-color:var(--pre); color:var(--pre); font-weight:700}
 .stage.instant *, .stage.instant *::before, .stage.instant *::after{transition:none !important}
 
 /* uitleg en bediening */
 .cap{
-  background:var(--panel); border-radius:8px; padding:14px 18px; min-height:3.1em;
-  font-size:clamp(1rem, 1.9vw, 1.28rem); line-height:1.45; transition:opacity .25s;
+  background:var(--panel); border-radius:8px; padding:12px 16px; min-height:3em;
+  font-size:clamp(1rem, 1.9vw, 1.25rem); line-height:1.45; transition:opacity .25s;
 }
 .cap.fade{opacity:0}
-.cap b.kp{color:var(--per)} .cap b.kq{color:var(--pre)} .cap b.kc{color:var(--comma)}
+.cap b.kp{color:var(--per)} .cap b.kq{color:var(--pre)} .cap b.kc{color:var(--comma)} .cap b.ks{color:var(--step)}
 .cap .num{font-family:var(--f-num); white-space:nowrap}
 .ctl{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
 .dots{display:flex; gap:6px; flex-wrap:wrap; margin-right:auto}
 .dot{width:14px; height:14px; border-radius:50%; border:2px solid var(--line); background:transparent; padding:0; cursor:pointer}
 .dot.done{background:var(--per); border-color:var(--per)}
-.dot:focus-visible{outline:3px solid var(--per); outline-offset:2px}
 .count{font-variant-numeric:tabular-nums; color:var(--muted); min-width:5.5em; text-align:right}
 @media (prefers-reduced-motion: reduce){
-  .row,.strip,.d,.d::before,.comma,.arc,.rule,.p2,.cap{transition-duration:.01s !important; transition-delay:0s !important}
+  .row,.strip,.d,.d::before,.comma,.arc,.rule,.p2,.cap,.fr,.method li,.method li .n{transition-duration:.01s !important; transition-delay:0s !important}
 }
-@media (max-width:560px){ .ctl .btn{padding:.5em .8em} .count{min-width:auto} }
+@media (max-width:560px){ .ctl .btn{padding:.5em .75em} .count{min-width:auto} }
 </style>
 </head>
 <body>
@@ -159,13 +183,19 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
   <header>
     <div>
       <h1>Repeterend decimaal getal omzetten naar een breuk</h1>
-      <p class="hint">Tik op het bord of gebruik de pijltjestoetsen om verder te gaan.</p>
+      <p class="hint">Kies een voorbeeld. Tik op het bord of gebruik de pijltjestoetsen om verder te gaan.</p>
     </div>
-    <div class="tabs" role="group" aria-label="Kies een voorbeeld">
-      <button class="btn tab" id="tab-a" data-ex="a" aria-pressed="true">Gemengd <small>2,1666…</small></button>
-      <button class="btn tab" id="tab-b" data-ex="b" aria-pressed="false">Zuiver <small>0,3636…</small></button>
-    </div>
+    <div class="pick" id="pick" role="group" aria-label="Kies een voorbeeld"><span class="pick-label">Voorbeeld</span></div>
   </header>
+
+  <section class="method" aria-label="De methode">
+    <p id="m0">Noem het decimale getal x. Dan:</p>
+    <ol>
+      <li id="m1"><span class="n">1</span><span>Vermenigvuldig zodat de periode vóór de komma staat.</span></li>
+      <li id="m2"><span class="n">2</span><span>Vermenigvuldig zodat de periode juist ná de komma staat.</span></li>
+      <li id="m3"><span class="n">3</span><span>Trek van elkaar af en deel.</span></li>
+    </ol>
+  </section>
 
   <div class="stage" id="stage" role="img" aria-label="Animatie van de omzetting"></div>
 
@@ -183,63 +213,93 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
 
 <script>
 (function(){
-  const DEF = {show:0, y:0, off:0, comma:null, len:0, op:'', dim:0, bar:0, tail:'', hidden:[], arc:null, p2:0};
+  /* De tien voorbeelden: geheel deel, cijfers tussen komma en periode, periode */
+  const LIST = [
+    {int:'0', pre:'',   per:'3'},
+    {int:'5', pre:'',   per:'8'},
+    {int:'0', pre:'',   per:'36'},
+    {int:'1', pre:'',   per:'27'},
+    {int:'0', pre:'',   per:'123'},
+    {int:'2', pre:'1',  per:'6'},
+    {int:'0', pre:'8',  per:'3'},
+    {int:'0', pre:'0',  per:'7'},
+    {int:'0', pre:'41', per:'6'},
+    {int:'3', pre:'1',  per:'45'}
+  ];
 
-  const EX = {
-    a: {
-      bar:[2,2],
-      rows:{
-        x:{lab:'x', digits:'21666666', role:i => i===0?'int':i===1?'pre':'per'},
-        r10:{lab:'10x', digits:'21666666', role:i => i===0?'int':i===1?'pre':'per'},
-        r100:{lab:'100x', digits:'21666666', role:i => i===0?'int':i===1?'pre':'per'},
-        res:{lab:'90x', digits:'195', role:() => 'int', plain:1},
-        frac:{lab:'x', frac:['195','90','13','6']}
-      },
-      steps:[
-        {cap:'We noemen het repeterend decimaal getal <b>x</b>: <span class="num">x = 2,1666…</span>',
-         rows:{x:{show:1, y:1, comma:1, len:8}}},
-        {cap:'De <b class="kp">periode</b> is 6: dat cijfer blijft zich herhalen. Tussen de komma en de periode staat nog het cijfer <b class="kq">1</b>.',
-         rows:{x:{bar:1}}},
-        {cap:'Vermenigvuldig met 10. De <b class="kc">komma</b> schuift 1 plaats naar rechts en staat nu vlak <b>vóór</b> de periode.',
-         rows:{r10:{show:1, y:3, comma:{from:1, to:2}, len:8, arc:{from:1, to:2, label:'· 10'}}}},
-        {cap:'Vermenigvuldig met 100. De <b class="kc">komma</b> schuift 2 plaatsen naar rechts en staat nu <b>na</b> één volledige periode.',
-         rows:{r10:{arc:null}, r100:{show:1, y:5, comma:{from:1, to:3}, len:8, arc:{from:1, to:3, label:'· 100'}}}},
-        {cap:'Zet 100x en 10x onder elkaar, komma onder komma. Na de komma staan in beide getallen precies dezelfde cijfers: <span class="num">666…</span>',
-         rows:{x:{dim:1, bar:0}, r100:{y:4, arc:null, tail:'glow'}, r10:{y:5, off:1, len:7, op:'−', tail:'glow'}}},
-        {cap:'Trek af. De oneindige staarten vallen tegen elkaar weg: <span class="num">100x − 10x = 90x</span> en <span class="num">216 − 21 = 195</span>.',
-         rows:{r100:{tail:'strike'}, r10:{tail:'strike'}, res:{show:1, y:6, len:3}}, rule:6},
-        {cap:'Deel beide leden door 90.',
-         rows:{frac:{show:1, y:8}}},
-        {cap:'Vereenvoudig: deel teller en noemer door 15. Controle: <span class="num">13 : 6 = 2,1666…</span>',
-         rows:{frac:{p2:1}}}
-      ]
-    },
-    b: {
-      bar:[1,2],
-      rows:{
-        x:{lab:'x', digits:'0363636363', role:i => i===0?'int':'per'},
-        r100:{lab:'100x', digits:'0363636363', role:i => i===0?'int':'per'},
-        res:{lab:'99x', digits:'36', role:() => 'int', plain:1},
-        frac:{lab:'x', frac:['36','99','4','11']}
-      },
-      steps:[
-        {cap:'We noemen het repeterend decimaal getal <b>x</b>: <span class="num">x = 0,3636…</span>',
-         rows:{x:{show:1, y:1, comma:1, len:9}}},
-        {cap:'De <b class="kp">periode</b> is 36. De <b class="kc">komma</b> staat hier al vlak vóór de periode, dus die eerste verschuiving is niet nodig.',
-         rows:{x:{bar:1}}},
-        {cap:'Vermenigvuldig met 100. De <b class="kc">komma</b> schuift 2 plaatsen naar rechts, tot <b>na</b> één volledige periode. De 0 vooraan valt weg.',
-         rows:{r100:{show:1, y:3, comma:{from:1, to:3}, len:9, arc:{from:1, to:3, label:'· 100'}, hideAfter:[0]}}},
-        {cap:'Zet 100x en x onder elkaar, komma onder komma. Na de komma staan in beide getallen precies dezelfde cijfers: <span class="num">3636…</span>',
-         rows:{r100:{y:4, arc:null, tail:'glow'}, x:{y:5, off:2, len:7, op:'−', tail:'glow', bar:0}}},
-        {cap:'Trek af. De oneindige staarten vallen tegen elkaar weg: <span class="num">100x − x = 99x</span> en <span class="num">36 − 0 = 36</span>.',
-         rows:{r100:{tail:'strike'}, x:{tail:'strike'}, res:{show:1, y:6, off:1, len:2}}, rule:6},
-        {cap:'Deel beide leden door 99.',
-         rows:{frac:{show:1, y:8}}},
-        {cap:'Vereenvoudig: deel teller en noemer door 9. Controle: <span class="num">4 : 11 = 0,3636…</span>',
-         rows:{frac:{p2:1}}}
-      ]
+  const DEF = {show:0, y:0, off:0, comma:null, len:0, op:'', dim:0, bar:0, tail:'', hidden:[], arc:null, p2:0, hl:0};
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  const plaats = n => n === 1 ? '1 plaats' : n + ' plaatsen';
+  const lab = m => m === 1 ? 'x' : m + 'x';
+
+  function decText(e){
+    // x als tekst, bv. 2,1666…
+    let s = e.int + ',' + e.pre;
+    while (s.length - e.int.length - 1 < e.pre.length + Math.max(3, 2 * e.per.length)) s += e.per;
+    return s + '…';
+  }
+  function leadingZeros(D, c){
+    const z = [];
+    for (let i = 0; i < c - 1 && D[i] === '0'; i++) z.push(i);
+    return z;
+  }
+
+  function makeExample(e){
+    const I = e.int.length, P = e.pre.length, Q = e.per.length;
+    const cx = I, c2 = I + P, c1 = I + P + Q;
+    const m1 = Math.pow(10, P + Q), m2 = Math.pow(10, P), k = m1 - m2;
+    const T = Q === 1 ? 5 : 6;
+    const L = c1 + T;
+    let D = e.int + e.pre;
+    while (D.length < L + 2) D += e.per;
+    const A = parseInt(D.slice(0, c1), 10), B = parseInt(D.slice(0, c2), 10), N = A - B;
+    const g = gcd(N, k), n2 = N / g, d2 = k / g;
+    const xs = decText(e);
+    const role = i => i < I ? 'int' : i < I + P ? 'pre' : 'per';
+    const N_str = String(N);
+    const z1 = leadingZeros(D, c1), z2 = leadingZeros(D, c2);
+    const shift = c1 - c2;
+
+    const rows = {
+      x:{lab:'x', digits:D, role},
+      r1:{lab:lab(m1), digits:D, role},
+      r2:{lab:lab(m2), digits:D, role},
+      res:{lab:lab(k), digits:N_str, role:() => 'int', plain:1},
+      frac:{lab:'x', frac: g > 1 ? [String(N), String(k), String(n2), String(d2)] : [String(N), String(k)]}
+    };
+
+    const steps = [];
+    steps.push({m:0, cap:'Noem het decimale getal <b>x</b>: <span class="num">x = ' + xs + '</span>',
+      rows:{x:{show:1, y:1, comma:cx, len:L}}});
+    steps.push({m:0, cap: P > 0
+        ? 'De <b class="kp">periode</b> is ' + e.per + '. Tussen de komma en de periode staat nog ' + (P === 1 ? 'het cijfer ' : 'de cijfers ') + '<b class="kq">' + e.pre + '</b>.'
+        : 'De <b class="kp">periode</b> is ' + e.per + '. Ze begint meteen na de komma.',
+      rows:{x:{bar:1}}});
+    steps.push({m:1, cap:'<b class="ks">Stap 1.</b> Vermenigvuldig zodat de periode vóór de komma staat: <span class="num">· ' + m1 + '</span>. De <b class="kc">komma</b> schuift ' + plaats(P + Q) + ' naar rechts.',
+      rows:{x:{bar:0}, r1:{show:1, y:3, comma:{from:cx, to:c1}, len:L, arc:{from:cx, to:c1, label:'· ' + m1}, hideAfter:z1}}});
+    if (m2 > 1) {
+      steps.push({m:2, cap:'<b class="ks">Stap 2.</b> Vermenigvuldig zodat de periode juist ná de komma staat: <span class="num">· ' + m2 + '</span>. De <b class="kc">komma</b> schuift ' + plaats(P) + ' naar rechts.',
+        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:{from:cx, to:c2}, len:L, arc:{from:cx, to:c2, label:'· ' + m2}, hideAfter:z2}}});
+    } else {
+      steps.push({m:2, cap:'<b class="ks">Stap 2.</b> In x staat de periode al juist ná de komma. Hier hoef je dus niet te vermenigvuldigen.',
+        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:cx, len:L}}});
     }
-  };
+    steps.push({m:3, cap:'<b class="ks">Stap 3.</b> Zet <span class="num">' + lab(m1) + '</span> en <span class="num">' + lab(m2) + '</span> onder elkaar, komma onder komma. Na de komma staan in beide getallen precies dezelfde cijfers.',
+      rows:{x:{dim:1}, r1:{y:4, arc:null, tail:'glow'}, r2:{y:5, off:shift, len:L - shift, op:'−', arc:null, tail:'glow'}}});
+    steps.push({m:3, cap:'Trek af. De oneindige staarten vallen tegen elkaar weg: <span class="num">' + lab(m1) + ' − ' + lab(m2) + ' = ' + lab(k) + '</span> en <span class="num">' + A + ' − ' + B + ' = ' + N + '</span>.',
+      rows:{r1:{tail:'strike'}, r2:{tail:'strike'}, res:{show:1, y:6, off:c1 - N_str.length, len:N_str.length}}, rule:6});
+    if (g > 1) {
+      steps.push({m:3, cap:'Deel beide leden door ' + k + '.', rows:{frac:{show:1, y:8}}});
+      steps.push({m:3, cap:'Vereenvoudig: deel teller en noemer door ' + g + '. Controle: <span class="num">' + n2 + ' : ' + d2 + ' = ' + xs + '</span>',
+        rows:{frac:{p2:1}}});
+    } else {
+      steps.push({m:3, cap:'Deel beide leden door ' + k + '. Deze breuk kan je niet meer vereenvoudigen. Controle: <span class="num">' + N + ' : ' + k + ' = ' + xs + '</span>',
+        rows:{frac:{show:1, y:8, hl:1}}});
+    }
+    return {rows, steps, bar:[I + P, I + P + Q - 1], xs, answer: n2 + '/' + d2, mixed: P > 0};
+  }
+
+  const EX = LIST.map(makeExample);
 
   const stage = document.getElementById('stage');
   const cap = document.getElementById('cap');
@@ -247,8 +307,19 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
   const count = document.getElementById('count');
   const prevB = document.getElementById('prev');
   const nextB = document.getElementById('next');
+  const pick = document.getElementById('pick');
+  const mEls = ['m0', 'm1', 'm2', 'm3'].map(id => document.getElementById(id));
 
-  let exKey = 'a', ex, states, idx = 0, els = {}, ruleEl, timers = [];
+  let exIdx = 0, ex, states, idx = 0, els = {}, ruleEl, timers = [];
+
+  EX.forEach((e, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.innerHTML = '<span>' + e.xs + '</span><i>' + (e.mixed ? 'gemengd' : 'zuiver') + '</i>';
+    b.setAttribute('aria-label', 'Voorbeeld ' + (i + 1) + ': ' + e.xs);
+    b.addEventListener('click', () => setEx(i));
+    pick.appendChild(b);
+  });
 
   function computeStates(e){
     let st = {rows:{}, rule:null};
@@ -277,7 +348,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
   const fr = (n, d, cls) => '<span class="fr ' + (cls || '') + '"><span>' + cells(n) + '</span><span>' + cells(d) + '</span></span>';
 
   function build(){
-    ex = EX[exKey];
+    ex = EX[exIdx];
     states = computeStates(ex);
     stage.innerHTML = '';
     els = {};
@@ -294,8 +365,9 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
         row.style.setProperty('--h', 2);
         strip.classList.add('frac');
         const f = spec.frac;
-        strip.innerHTML = fr(f[0], f[1]) + '<span class="p2"><span class="mid">=</span>' + fr(f[2], f[3], 'hl') + '</span>';
+        strip.innerHTML = fr(f[0], f[1], 'first') + (f.length > 2 ? '<span class="p2"><span class="mid">=</span>' + fr(f[2], f[3], 'hl') + '</span>' : '');
         o.p2 = strip.querySelector('.p2');
+        o.first = strip.querySelector('.fr.first');
       } else {
         spec.digits.split('').forEach((ch, i) => {
           const d = document.createElement('span');
@@ -336,7 +408,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
       b.addEventListener('click', ev => { ev.stopPropagation(); goTo(i); });
       dots.appendChild(b);
     });
-    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.ex === exKey)));
+    [...pick.querySelectorAll('.chip')].forEach((c, i) => c.setAttribute('aria-pressed', String(i === exIdx)));
   }
 
   function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
@@ -347,7 +419,11 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
     o.row.classList.toggle('dim', !!r.dim);
     o.row.style.setProperty('--y', r.y);
     o.row.querySelector('.op').textContent = r.op || '';
-    if (o.p2) { o.p2.classList.toggle('on', !!r.p2); return; }
+    if (o.spec.frac) {
+      if (o.p2) o.p2.classList.toggle('on', !!r.p2);
+      o.first.classList.toggle('hl', !!r.hl);
+      return;
+    }
     o.strip.style.setProperty('--off', r.off);
 
     const bar = ex.bar;
@@ -361,7 +437,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
       d.classList.toggle('strike', inTail && r.tail === 'strike');
       d.style.setProperty('--k', inTail ? i - r.comma : 0);
     });
-    if (animHide.length) later(() => animHide.forEach(i => o.digits[i].classList.add('gone')), 1500);
+    if (animHide.length) later(() => animHide.forEach(i => o.digits[i].classList.add('gone')), 1550);
 
     if (o.ell) {
       o.ell.style.setProperty('--i', r.len);
@@ -391,6 +467,14 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
     }
   }
 
+  function setMethod(m){
+    mEls[0].classList.toggle('on', m === 0);
+    for (let s = 1; s <= 3; s++) {
+      mEls[s].classList.toggle('on', m === s);
+      mEls[s].classList.toggle('done', m > s);
+    }
+  }
+
   function apply(i, anim){
     timers.forEach(clearTimeout); timers = [];
     idx = i;
@@ -401,23 +485,24 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
     if (st.rule != null) ruleEl.style.setProperty('--y', st.rule);
     if (!anim) { void stage.offsetWidth; requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.remove('instant'))); }
 
-    cap.classList.add('fade');
-    later(() => { cap.innerHTML = p.cap; cap.classList.remove('fade'); }, anim ? 180 : 0);
-    if (!anim) { cap.innerHTML = p.cap; cap.classList.remove('fade'); }
+    setMethod(p.m);
+    if (anim) {
+      cap.classList.add('fade');
+      later(() => { cap.innerHTML = p.cap; cap.classList.remove('fade'); }, 180);
+    } else {
+      cap.innerHTML = p.cap; cap.classList.remove('fade');
+    }
 
     [...dots.children].forEach((d, k) => { d.classList.toggle('done', k <= i); d.setAttribute('aria-current', k === i ? 'step' : 'false'); });
     count.textContent = 'Stap ' + (i + 1) + ' / ' + ex.steps.length;
     prevB.disabled = i === 0;
-    nextB.textContent = i === ex.steps.length - 1 ? 'Opnieuw beginnen' : 'Volgende';
+    nextB.textContent = i === ex.steps.length - 1 ? (exIdx < EX.length - 1 ? 'Volgend voorbeeld' : 'Opnieuw beginnen') : 'Volgende';
   }
 
-  function goTo(i){
-    if (i === idx + 1) apply(i, true);
-    else apply(i, false);
-  }
+  function goTo(i){ apply(i, i === idx + 1); }
   function next(){
     if (idx < ex.steps.length - 1) apply(idx + 1, true);
-    else { apply(0, false); }
+    else setEx(exIdx < EX.length - 1 ? exIdx + 1 : 0);
   }
   function prev(){ if (idx > 0) apply(idx - 1, false); }
   function replay(){
@@ -427,8 +512,8 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
     setTimeout(() => apply(i, true), 120);
   }
   function setEx(k){
-    exKey = k; build(); idx = 0;
-    for (const id in els) { els[id].row.classList.remove('on'); }
+    timers.forEach(clearTimeout); timers = [];
+    exIdx = k; build(); idx = 0;
     requestAnimationFrame(() => apply(0, true));
   }
 
@@ -436,7 +521,6 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.55rem); line-height:1.2; text-wra
   nextB.addEventListener('click', next);
   prevB.addEventListener('click', prev);
   document.getElementById('replay').addEventListener('click', replay);
-  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setEx(t.dataset.ex)));
   document.getElementById('full').addEventListener('click', () => {
     try {
       const el = document.documentElement;
