@@ -16,7 +16,7 @@
   --step:#1F6F78; --on-step:#FFFFFF; --step-soft:rgba(31,111,120,.12);
   --f-num:"Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --f-body:"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --cell: clamp(19px, min(calc((min(100vw, 1000px) - 48px) / 17), calc((100vh - 400px) / 11)), 56px);
+  --cell: clamp(19px, min(calc((min(100vw, 1000px) - 48px) / 19), calc((100vh - 400px) / 11)), 56px);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -75,7 +75,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
 
 /* het bord */
 .stage{
-  position:relative; width:calc(var(--cell) * 17); height:calc(var(--cell) * 11); max-width:100%;
+  position:relative; width:calc(var(--cell) * 19); height:calc(var(--cell) * 11); max-width:100%;
   margin:0 auto; box-sizing:content-box; border:1px solid var(--line); border-radius:6px; overflow:hidden;
   background-color:var(--paper);
   background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -91,10 +91,10 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
 .row.on.dim{opacity:.28}
 .op,.lab,.eq{position:absolute; top:0; height:100%; display:flex; align-items:center; font-size:calc(var(--cell) * .74)}
 .op{left:0; width:var(--cell); justify-content:center; color:var(--comma); font-weight:700}
-.lab{left:var(--cell); width:calc(var(--cell) * 4); justify-content:flex-end; padding-right:calc(var(--cell) * .12); box-sizing:border-box; font-weight:700; white-space:nowrap}
-.eq{left:calc(var(--cell) * 5); width:var(--cell); justify-content:center}
+.lab{left:var(--cell); width:calc(var(--cell) * 3); justify-content:flex-end; padding-right:calc(var(--cell) * .12); box-sizing:border-box; font-weight:700; white-space:nowrap}
+.eq{left:calc(var(--cell) * 4); width:var(--cell); justify-content:center}
 .strip{
-  position:absolute; left:calc(var(--cell) * 6); top:0; height:100%; width:calc(var(--cell) * 11);
+  position:absolute; left:calc(var(--cell) * 5); top:0; height:100%; width:calc(var(--cell) * 14);
   transform:translateX(calc(var(--cell) * var(--off, 0)));
   transition:transform .75s cubic-bezier(.3,.7,.2,1);
 }
@@ -120,7 +120,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
   position:absolute; top:0; height:var(--cell); width:0; left:calc(var(--cell) * var(--cp, 1));
   transition:left .9s cubic-bezier(.55,0,.2,1);
 }
-.comma.nott{transition:none}
+.comma.nott, .strip.nott{transition:none}
 .comma span{
   position:absolute; left:0; bottom:calc(var(--cell) * -.2); transform:translateX(-50%);
   color:var(--comma); font-size:calc(var(--cell) * 1.05); font-weight:700; line-height:1;
@@ -138,7 +138,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
   background:var(--paper); padding:0 .3em; line-height:1.2;
 }
 .rule{
-  position:absolute; left:0; width:calc(var(--cell) * 16); height:max(2px, calc(var(--cell) * .08));
+  position:absolute; left:0; width:calc(var(--cell) * 18); height:max(2px, calc(var(--cell) * .08));
   top:calc(var(--cell) * var(--y, 6) - max(1px, calc(var(--cell) * .04)));
   background:var(--ink); transform:scaleX(0); transform-origin:left; transition:transform .6s ease;
 }
@@ -258,7 +258,6 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
     const role = i => i < I ? 'int' : i < I + P ? 'pre' : 'per';
     const N_str = String(N);
     const z1 = leadingZeros(D, c1), z2 = leadingZeros(D, c2);
-    const shift = c1 - c2;
 
     const rows = {
       x:{lab:'x', digits:D, role},
@@ -270,22 +269,22 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
 
     const steps = [];
     steps.push({m:0, cap:'Noem het decimale getal <b>x</b>: <span class="num">x = ' + xs + '</span>',
-      rows:{x:{show:1, y:1, comma:cx, len:L}}});
+      rows:{x:{show:1, y:1, comma:cx, len:cx + T, off:c1 - cx}}});
     steps.push({m:0, cap: P > 0
         ? 'De <b class="kp">periode</b> is ' + e.per + '. Tussen de komma en de periode staat nog ' + (P === 1 ? 'het cijfer ' : 'de cijfers ') + '<b class="kq">' + e.pre + '</b>.'
         : 'De <b class="kp">periode</b> is ' + e.per + '. Ze begint meteen na de komma.',
       rows:{x:{bar:1}}});
     steps.push({m:1, cap:'<b class="ks">Stap 1.</b> Vermenigvuldig zodat de periode vóór de komma staat: <span class="num">· ' + m1 + '</span>. De <b class="kc">komma</b> schuift ' + plaats(P + Q) + ' naar rechts.',
-      rows:{x:{bar:0}, r1:{show:1, y:3, comma:{from:cx, to:c1}, len:L, arc:{from:cx, to:c1, label:'· ' + m1}, hideAfter:z1}}});
+      rows:{x:{bar:0}, r1:{show:1, y:3, comma:{from:cx, to:c1}, len:L, slide:{from:c1 - cx, to:0}, arc:{from:cx, to:c1, label:'· ' + m1}, hideAfter:z1}}});
     if (m2 > 1) {
       steps.push({m:2, cap:'<b class="ks">Stap 2.</b> Vermenigvuldig zodat de periode juist ná de komma staat: <span class="num">· ' + m2 + '</span>. De <b class="kc">komma</b> schuift ' + plaats(P) + ' naar rechts.',
-        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:{from:cx, to:c2}, len:L, arc:{from:cx, to:c2, label:'· ' + m2}, hideAfter:z2}}});
+        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:{from:cx, to:c2}, len:c2 + T, slide:{from:c1 - cx, to:c1 - c2}, arc:{from:cx, to:c2, label:'· ' + m2}, hideAfter:z2}}});
     } else {
       steps.push({m:2, cap:'<b class="ks">Stap 2.</b> In x staat de periode al juist ná de komma. Hier hoef je dus niet te vermenigvuldigen.',
-        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:cx, len:L}}});
+        rows:{r1:{arc:null}, r2:{show:1, y:5, comma:cx, len:cx + T, off:c1 - cx}}});
     }
-    steps.push({m:3, cap:'<b class="ks">Stap 3.</b> Zet <span class="num">' + lab(m1) + '</span> en <span class="num">' + lab(m2) + '</span> onder elkaar, komma onder komma. Na de komma staan in beide getallen precies dezelfde cijfers.',
-      rows:{x:{dim:1}, r1:{y:4, arc:null, tail:'glow'}, r2:{y:5, off:shift, len:L - shift, op:'−', arc:null, tail:'glow'}}});
+    steps.push({m:3, cap:'<b class="ks">Stap 3.</b> Neem <span class="num">' + lab(m1) + '</span> en <span class="num">' + lab(m2) + '</span>. Ze staan al komma onder komma: na de komma staan in beide getallen precies dezelfde cijfers.',
+      rows:{x:{dim:1}, r1:{y:4, arc:null, tail:'glow'}, r2:{y:5, op:'−', arc:null, tail:'glow'}}});
     steps.push({m:3, cap:'Trek af. De oneindige staarten vallen tegen elkaar weg: <span class="num">' + lab(m1) + ' − ' + lab(m2) + ' = ' + lab(k) + '</span> en <span class="num">' + A + ' − ' + B + ' = ' + N + '</span>.',
       rows:{r1:{tail:'strike'}, r2:{tail:'strike'}, res:{show:1, y:6, off:c1 - N_str.length, len:N_str.length}}, rule:6});
     if (g > 1) {
@@ -333,6 +332,7 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
         for (const k in patch) {
           const v = patch[k];
           if (k === 'comma' && v && typeof v === 'object') r.comma = v.to;
+          else if (k === 'slide') r.off = v.to;
           else if (k === 'hideAfter') r.hidden = r.hidden.concat(v);
           else r[k] = v;
         }
@@ -424,7 +424,16 @@ h1{margin:0; font-size:clamp(1.15rem, 2.3vw, 1.5rem); line-height:1.2; text-wrap
       o.first.classList.toggle('hl', !!r.hl);
       return;
     }
-    o.strip.style.setProperty('--off', r.off);
+    if (patch && patch.slide) {
+      const sl = patch.slide;
+      o.strip.classList.add('nott');
+      o.strip.style.setProperty('--off', sl.from);
+      void o.strip.offsetWidth;
+      o.strip.classList.remove('nott');
+      if (sl.to !== sl.from) later(() => o.strip.style.setProperty('--off', sl.to), 1650);
+    } else {
+      o.strip.style.setProperty('--off', r.off);
+    }
 
     const bar = ex.bar;
     const animHide = patch && patch.hideAfter ? patch.hideAfter : [];
